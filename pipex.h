@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 11:23:33 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/17 15:01:10 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/20 15:51:23 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,21 @@ typedef struct s_data
 	int		file2;
 	char	**env;
 	char	***cmd;
+	char	**path;
+	char	*temp;
+	char	*temp_path;
+	int		i;
+	int		j;
 }				t_data;
 
-void	start_program(t_data *data);
-int		obtain_comands(int argc, char **argv, t_data *data);
-int		main(int argc, char **argv, char **env);
-int		new_split(t_data *data, char **env);
-void	free_all(t_data *data);
+void		start_program(t_data *data);
+void		child_process(int *fd, t_data *data);
+int			obtain_comands(int argc, char **argv, t_data *data);
+int			main(int argc, char **argv, char **env);
+int			new_split(t_data *data, char **env);
+void		free_all(t_data *data);
+int			ft_check(t_data *data, int len);
+void		ft_error(char *str);
+void		ft_exec(t_data *data);
 
 #endif

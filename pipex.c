@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 11:14:40 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/17 13:22:07 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/20 16:09:45 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,25 @@ void	start_program(t_data *data)
 {
 	data->file1 = 0;
 	data->file2 = 0;
+	data->i = 0;
+	data->j = 0;
+	data->path = NULL;
+	data->temp = NULL;
+	data->temp_path = NULL;
 	data->env = NULL;
 	data->cmd = NULL;
+}
+
+void	child_process(int *end, t_data *data)
+{
+	close(end[1]);
+	if (dup2(end[0], STDIN_FILENO) == -1)
+		ft_error("Error de stdin child");
+	if (dup2(data->file2, STDOUT_FILENO) == -1)
+		ft_error("Error de stdout child");
+	close(data->file2);
+	if (execve(data->path[1], data->cmd[1], NULL) == -1)
+		ft_error("Error de execve child");
 }
 
 int	obtain_comands(int argc, char **argv, t_data *data)
@@ -36,7 +53,7 @@ int	obtain_comands(int argc, char **argv, t_data *data)
 		i++;
 		j++;
 	}
-	data->cmd = NULL;
+	data->cmd[i] = NULL;
 	return (EXIT_SUCCESS);
 }
 
@@ -55,12 +72,16 @@ int	main(int argc, char **argv, char **env)
 		data->file2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (data->file2 == -1)
 			perror("Error file2");
-		new_split(data, env);
-		obtain_comands(argc, argv, data);
-		/*i = -1;
-		while ((data->env)[++i])
-		{
-			ft_printf("%s\n", (data->env)[i]);
-		}*/
+		if (new_split(data, env) == 1)
+			return (free_all(data), EXIT_FAILURE);
+		if (obtain_comands(argc, argv, data) == 1)
+			return (free_all(data), EXIT_FAILURE);
+		if (ft_check(data, argc - 2) == 1)
+			return (free_all(data), EXIT_FAILURE);
+		ft_exec(data);
+		free_all(data);
+		return (EXIT_SUCCESS);
 	}
+	free_all(data);
+	ft_error("Error de argumentos");
 }
