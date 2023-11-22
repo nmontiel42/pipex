@@ -6,11 +6,13 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 11:30:08 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/22 14:36:39 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/22 16:57:21 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
+
+static void	free_all_2(t_data *data);
 
 int	new_split(t_data *data, char **env)
 {
@@ -32,19 +34,39 @@ void	free_all(t_data *data)
 	int	j;
 
 	i = 0;
-	while (data->env != NULL)
-		free((data->env)[i++]);
-	free(data->env);
-	i = 0;
-	while (data->cmd != NULL)
+	if (data->env != NULL)
 	{
-		j = 0;
-		while ((data->cmd)[i][j])
-			free((data->cmd)[i][j++]);
-		free((data->cmd)[i]);
+		while (data->env[i] != NULL)
+			free((data->env)[i++]);
+		free(data->env);
 	}
-	free(data->cmd);
+	i = -1;
+	if (data->cmd != NULL)
+	{
+		while (data->cmd[++i] != NULL)
+		{
+			j = -1;
+			while ((data->cmd)[i][++j] != NULL)
+				free(data->cmd[i][j]);
+			free((data->cmd)[i]);
+		}
+		free(data->cmd);
+	}
+	free_all_2(data);
 	free(data);
+}
+
+static void	free_all_2(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	if (data->path != NULL)
+	{
+		while (data->path[i] != NULL)
+			free(data->path[i++]);
+		free(data->path);
+	}
 }
 
 int	ft_check(t_data *data, int len)
@@ -82,41 +104,4 @@ void	ft_error2(char *str, int here_doc)
 		unlink("here_doc.tmp");
 	perror(str);
 	exit(EXIT_FAILURE);
-}
-
-void	ft_exec2(t_data *data, int argc, char **argv)
-{
-	int		end[2];
-	pid_t	child_pid;
-
-	check_flag(argc, argv, data);
-	if (dup2(data->file1, STDIN_FILENO) == -1)
-		ft_error2("Error de stdin file1", data->flag_hd);
-	data->i = -1;
-	while (data->cmd[++data->i] != NULL)
-	{
-		if (pipe(end) == -1)
-			ft_error2("Fallo de pipe", data->flag_hd);
-		child_pid = fork();
-		if (child_pid == -1)
-			ft_error2("Fallo de child_pid", data->flag_hd);
-		if (child_pid == 0)
-		{
-			if (data->cmd[data->i + 1] == NULL)
-			{
-				dup2(data->file2, STDOUT_FILENO);
-				if (execve(data->path[data->i], data->cmd[data->i], NULL) == -1)
-					ft_error2("Error de execve child", data->flag_hd);
-				break ;
-			}
-			child_process(end, data);
-		}
-		else
-		{
-			waitpid(child_pid, NULL, 0);
-			close(end[1]);
-			if (dup2(end[0], STDIN_FILENO) == -1)
-				ft_error2("Error de padre dup2", data->flag_hd);
-		}
-	}
 }

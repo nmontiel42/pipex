@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 11:58:02 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/21 14:45:42 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/22 16:03:31 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,3 +53,41 @@ void	here_doc(t_data *data, int argc, char **argv)
 	if (data->file1 == -1 || data->file2 == -1)
 		ft_error2("Error de lecturaS bonus", data->flag_hd);
 }
+
+void	ft_exec2(t_data *data, int argc, char **argv)
+{
+	int		end[2];
+	pid_t	child_pid;
+
+	check_flag(argc, argv, data);
+	if (dup2(data->file1, STDIN_FILENO) == -1)
+		ft_error2("Error de stdin file1", data->flag_hd);
+	data->i = -1;
+	while (data->cmd[++data->i] != NULL)
+	{
+		if (pipe(end) == -1)
+			ft_error2("Fallo de pipe", data->flag_hd);
+		child_pid = fork();
+		if (child_pid == -1)
+			ft_error2("Fallo de child_pid", data->flag_hd);
+		if (child_pid == 0)
+		{
+			if (data->cmd[data->i + 1] == NULL)
+			{
+				dup2(data->file2, STDOUT_FILENO);
+				if (execve(data->path[data->i], data->cmd[data->i], NULL) == -1)
+					ft_error2("Error de execve child", data->flag_hd);
+				break ;
+			}
+			child_process(end, data);
+		}
+		else
+		{
+			waitpid(child_pid, NULL, 0);
+			close(end[1]);
+			if (dup2(end[0], STDIN_FILENO) == -1)
+				ft_error2("Error de padre dup2", data->flag_hd);
+		}
+	}
+}
+
