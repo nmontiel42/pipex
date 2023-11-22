@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/14 11:14:40 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/21 14:37:15 by nmontiel         ###   ########.fr       */
+/*   Created: 2023/11/21 11:29:51 by nmontiel          #+#    #+#             */
+/*   Updated: 2023/11/22 13:22:15 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "../pipex.h"
 
 void	start_program(t_data *data)
 {
@@ -30,14 +30,11 @@ void	start_program(t_data *data)
 
 void	child_process(int *end, t_data *data)
 {
-	close(end[1]);
-	if (dup2(end[0], STDIN_FILENO) == -1)
-		ft_error("Error de stdin child");
-	if (dup2(data->file2, STDOUT_FILENO) == -1)
-		ft_error("Error de stdout child");
-	close(data->file2);
-	if (execve(data->path[1], data->cmd[1], NULL) == -1)
-		ft_error("Error de execve child");
+	close(end[0]);
+	if (dup2(end[1], STDOUT_FILENO) == -1)
+		ft_error2("Error de stdin child", data->flag_hd);
+	if (execve(data->path[data->i], data->cmd[data->i], NULL) == -1)
+		ft_error2("Error de execve child2", data->flag_hd);
 }
 
 int	obtain_comands(int argc, char **argv, t_data *data)
@@ -46,7 +43,10 @@ int	obtain_comands(int argc, char **argv, t_data *data)
 	int	j;
 
 	i = 0;
-	j = 2;
+	if (data->flag_hd)
+		j = 3;
+	else
+		j = 2;
 	data->cmd = ft_calloc(argc - 2, sizeof(char **));
 	while (i < argc - 2 && j < argc - 1)
 	{
@@ -60,31 +60,33 @@ int	obtain_comands(int argc, char **argv, t_data *data)
 	return (EXIT_SUCCESS);
 }
 
+int	get_here_doc(char *argv, t_data *data)
+{
+	if (ft_strncmp(argv, "here_doc", 8) == 0)
+		return (data->flag_hd = 1, 6);
+	return (5);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	t_data	*data;
 	int		i;
 
-	if (argc == 5)
+	data = ft_calloc(1, sizeof(t_data));
+	if (data == NULL)
+		return (free_all(data), EXIT_FAILURE);
+	start_program(data);
+	if (argc >= get_here_doc(argv[1], data))
 	{
-		data = ft_calloc(1, sizeof(t_data));
-		start_program(data);
-		data->file1 = open(argv[1], O_RDONLY);
-		if (data->file1 == -1)
-			perror("Error file1");
-		data->file2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (data->file2 == -1)
-			perror("Error file2");
 		if (new_split(data, env) == 1)
 			return (free_all(data), EXIT_FAILURE);
 		if (obtain_comands(argc, argv, data) == 1)
 			return (free_all(data), EXIT_FAILURE);
 		if (ft_check(data, argc - 2) == 1)
 			return (free_all(data), EXIT_FAILURE);
-		ft_exec(data);
-		free_all(data);
+		ft_exec2(data, argc, argv);
 		return (EXIT_SUCCESS);
 	}
 	free_all(data);
-	ft_error("Error de argumentos");
+	ft_error2("Error de argumentos", data->flag_hd);
 }
