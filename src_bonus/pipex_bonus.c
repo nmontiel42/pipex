@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 11:29:51 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/22 13:22:15 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/22 14:42:17 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ int	main(int argc, char **argv, char **env)
 	int		i;
 
 	data = ft_calloc(1, sizeof(t_data));
-	if (data == NULL)
-		return (free_all(data), EXIT_FAILURE);
+	if (!data)
+		ft_error2("Error al asignar memoria", data->flag_hd);
 	start_program(data);
 	if (argc >= get_here_doc(argv[1], data))
 	{
@@ -85,8 +85,9 @@ int	main(int argc, char **argv, char **env)
 		if (ft_check(data, argc - 2) == 1)
 			return (free_all(data), EXIT_FAILURE);
 		ft_exec2(data, argc, argv);
+		free_all(data);
 		return (EXIT_SUCCESS);
 	}
 	free_all(data);
-	ft_error2("Error de argumentos", data->flag_hd);
+	return (EXIT_FAILURE);
 }
