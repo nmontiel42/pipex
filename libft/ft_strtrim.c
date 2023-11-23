@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 13:41:50 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/05/04 12:16:41 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/10/30 11:26:55 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 static int	initial_pos(char const *s1, char const *set)
 {
-	int	a;
-	int	b;
+	size_t	a;
+	size_t	b;
 
 	a = 0;
 	b = 0;
@@ -40,8 +40,8 @@ static int	initial_pos(char const *s1, char const *set)
 
 static int	final_pos(char const *s1, char const *set)
 {
-	int	len;
-	int	j;
+	int		len;
+	size_t	j;
 
 	len = 0;
 	j = 0;

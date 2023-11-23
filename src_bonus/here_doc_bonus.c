@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 11:58:02 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/23 13:16:45 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/23 15:30:55 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,13 @@ void	here_doc(t_data *data, int argc, char **argv)
 		data->line = get_next_line(data->fd);
 		if (!data->line)
 			ft_error2("Error de get_next_data->line", data->flag_hd);
-		write(data->file1, data->line, ft_strlen(data->line));
 		if (!ft_strncmp(argv[2], data->line, ft_strlen(argv[2])))
 		{
 			close(data->fd);
 			get_next_line(data->fd);
 			break ;
 		}
+		write(data->file1, data->line, ft_strlen(data->line));
 		free(data->line);
 	}
 	close(data->file1);
@@ -65,11 +65,7 @@ void	ft_exec2(t_data *data, int argc, char **argv)
 	data->i = -1;
 	while (data->cmd[++data->i] != NULL)
 	{
-		if (pipe(end) == -1)
-			ft_error2("Fallo de pipe", data->flag_hd);
-		child_pid = fork();
-		if (child_pid == -1)
-			ft_error2("Fallo de child_pid", data->flag_hd);
+		start_pipe(data, end, &child_pid);
 		if (child_pid == 0)
 		{
 			if (data->cmd[data->i + 1] == NULL)
@@ -82,11 +78,23 @@ void	ft_exec2(t_data *data, int argc, char **argv)
 			child_process(end, data);
 		}
 		else
-		{
-			waitpid(child_pid, NULL, 0);
-			close(end[1]);
-			if (dup2(end[0], STDIN_FILENO) == -1)
-				ft_error2("Error de padre dup2", data->flag_hd);
-		}
+			start_parent(data, &child_pid, end);
 	}
+}
+
+void	start_pipe(t_data *data, int end[2], pid_t *child_pid)
+{
+	if (pipe(end) == -1)
+		ft_error2("Fallo de pipe", data->flag_hd);
+	*child_pid = fork();
+	if (*child_pid == -1)
+		ft_error2("Fallo de child_pid", data->flag_hd);
+}
+
+void	start_parent(t_data *data, pid_t *child_pid, int end[2])
+{
+	waitpid(*child_pid, NULL, 0);
+	close(end[1]);
+	if (dup2(end[0], STDIN_FILENO) == -1)
+		ft_error2("Error de padre dup2", data->flag_hd);
 }

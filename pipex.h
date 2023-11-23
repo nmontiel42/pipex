@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 11:23:33 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/23 13:11:39 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/23 15:30:32 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,7 @@ void		ft_exec2(t_data *data, int argc, char **argv);
 int			get_here_doc(char *argv, t_data *data);
 void		check_flag(int argc, char **argv, t_data *data);
 void		here_doc(t_data *data, int argc, char **argv);
+void		start_pipe(t_data *data, int end[2], pid_t *child_pid);
+void		start_parent(t_data *data, pid_t *child_pid, int end[2]);
 
 #endif

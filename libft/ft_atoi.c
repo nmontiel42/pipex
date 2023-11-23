@@ -6,33 +6,33 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 16:56:43 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/05/04 11:39:53 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/10/30 15:59:01 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_atoi(const char *str)
+long long	ft_atoi(const char *str)
 {
-	int	i;
-	int	sn;
-	int	num;
+	long long	sign;
+	long long	res;
 
-	i = 0;
-	sn = 1;
-	num = 0;
-	while (str[i] == ' ' || str[i] == '\f' || str[i] == '\n'
-		|| str[i] == '\r' || str[i] == '\t' || str[i] == '\v')
-		i++;
-	if (str[i] == '-')
-		sn *= -1;
-	if (str[i] == '+' || str[i] == '-')
-		i++;
-	while (str[i] >= '0' && str[i] <= '9')
+	sign = 1;
+	res = 0;
+	while (*str == 32 || (*str >= 9 && *str <= 13))
+		str++;
+	if (*str == '+' || *str == '-')
 	{
-		num = (str[i] - 48) + (num * 10);
-		i++;
+		if (*str == '-')
+			sign *= -1;
+		str++;
+		if (*str == '+' || *str == '-')
+			return (0);
 	}
-	num *= sn;
-	return (num);
+	while (*str >= '0' && *str <= '9')
+	{
+		res = res * 10 + (*str - '0');
+		str++;
+	}
+	return (res * sign);
 }

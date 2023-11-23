@@ -6,75 +6,78 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 18:49:35 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/04/26 18:57:24 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/10/30 11:23:57 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include <stdlib.h>
 
-static int	ft_cntwords(char const *s, char c)
+int	splits(char const *s, char c)
 {
-	int	count;
+	int	i;
+	int	split;
 
-	count = 0;
+	i = 0;
+	split = 0;
 	while (*s)
 	{
-		if (*s != c)
+		if (*s != c && i == 0)
 		{
-			count++;
-			while (*s && *s != c)
-				s++;
+			i = 1;
+			split++;
 		}
-		else
-			s++;
+		else if (*s == c)
+			i = 0;
+		s++;
 	}
-	return (count);
+	return (split);
 }
 
-static void	ft_free(char **str, int str_ind)
+char	*split_word(const char *s, int st, int fn)
 {
-	while (str_ind-- > 0)
-		free(str[str_ind]);
-	free(str);
-}
+	char	*str;
+	int		i;
 
-static int	ft_wordlen(char const *s, char c, int i)
-{
-	int	len;
-
-	len = 0;
-	while (s[i] && s[i] != c)
+	str = (char *)malloc(fn - st + 1);
+	if (!str)
+		return (0);
+	i = 0;
+	while (st < fn)
 	{
-		len++;
+		str[i] = s[st];
 		i++;
+		st++;
 	}
-	return (len);
+	str[i] = '\0';
+	return (str);
 }
 
 char	**ft_split(char const *s, char c)
 {
-	char	**str;
-	int		i;
-	int		str_ind;
+	char	**str_split;
+	size_t	i;
+	size_t	o;
+	int		pos;
 
-	i = 0;
-	str_ind = -1;
-	str = malloc(sizeof(char *) * (ft_cntwords (s, c) + 1));
-	if (!str)
+	str_split = malloc((splits(s, c) + 1) * sizeof(char *));
+	if (!s || !str_split)
 		return (0);
-	while (++str_ind < ft_cntwords (s, c))
+	i = 0;
+	o = 0;
+	pos = -1;
+	while (i <= ft_strlen(s))
 	{
-		while (s[i] == c)
-			i++;
-		str[str_ind] = ft_substr(s, i, ft_wordlen(s, c, i));
-		if (!(str[str_ind]))
+		if (s[i] != c && pos < 0)
+			pos = i;
+		else if ((s[i] == c || i == ft_strlen(s)) && pos >= 0)
 		{
-			ft_free(str, str_ind);
-			return (0);
+			str_split[o] = split_word(s, pos, i);
+			o++;
+			pos = -1;
 		}
-		i += ft_wordlen(s, c, i);
+		i++;
 	}
-	str[str_ind] = 0;
-	return (str);
+	str_split[o] = 0;
+	return (str_split);
 }
