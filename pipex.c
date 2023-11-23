@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 11:14:40 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/23 13:12:41 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/23 15:39:55 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,5 @@ int	main(int argc, char **argv, char **env)
 		free_all(data);
 		return (EXIT_SUCCESS);
 	}
-	free_all(data);
 	ft_error("Error de argumentos");
 }
