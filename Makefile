@@ -2,11 +2,13 @@ NAME = pipex
 NAME_BONUS = pipex_bonus
 
 SRCS	=	pipex.c\
-			pipex_utils.c
+			pipex_utils.c\
+			new_split.c
 			
 SRCS_BONUS	= src_bonus/pipex_bonus.c\
 				src_bonus/pipex_utils_bonus.c\
-				src_bonus/here_doc_bonus.c
+				src_bonus/here_doc_bonus.c\
+				src_bonus/new_split_bonus.c
 
 OBJS	= ${SRCS:.c=.o}
 

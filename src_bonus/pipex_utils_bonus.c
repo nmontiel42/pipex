@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 11:30:08 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/22 16:57:21 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/23 13:15:35 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	new_split(t_data *data, char **env)
 	while (ft_strncmp(env[i], "PATH", 4) != 0)
 		i++;
 	env[i] += 5;
-	data->env = ft_split (env[i], ':');
+	data->env = new_split_version(env[i], ':');
 	if (data->env == NULL)
 		return (free_all(data), perror("Error del split"), EXIT_FAILURE);
 	return (0);

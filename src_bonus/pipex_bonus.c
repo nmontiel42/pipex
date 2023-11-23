@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 11:29:51 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/22 16:57:53 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/23 13:19:35 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	obtain_comands(int argc, char **argv, t_data *data)
 	data->cmd = ft_calloc(argc - 2, sizeof(char **));
 	while (i < argc - 2 && j < argc - 1)
 	{
-		data->cmd[i] = ft_split(argv[j], ' ');
+		data->cmd[i] = new_split_version(argv[j], ' ');
 		if (data->cmd[i] == NULL)
 			return (EXIT_FAILURE);
 		i++;

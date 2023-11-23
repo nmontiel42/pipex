@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 11:23:33 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/21 13:09:04 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/23 13:11:39 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,11 @@ void		free_all(t_data *data);
 int			ft_check(t_data *data, int len);
 void		ft_error(char *str);
 void		ft_exec(t_data *data);
+void		free_split(char **arr);
+void		split_iterator(char **str, char d, char *aux, int *flag);
+size_t		wordscount(char *str, char d);
+int			wordlen(char *str, char d, int flag, char c);
+char		**new_split_version(char *s, char d);
 
 //BONUS
 void		ft_error2(char *str, int here_doc);

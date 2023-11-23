@@ -6,7 +6,7 @@
 /*   By: nmontiel <montielarce9@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 11:58:02 by nmontiel          #+#    #+#             */
-/*   Updated: 2023/11/22 16:03:31 by nmontiel         ###   ########.fr       */
+/*   Updated: 2023/11/23 13:16:45 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,4 +90,3 @@ void	ft_exec2(t_data *data, int argc, char **argv)
 		}
 	}
 }
-
